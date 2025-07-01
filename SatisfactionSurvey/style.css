@@ -1,0 +1,170 @@
+@font-face {
+    font-family: "Noto Sans Thai";
+    src: url(font/Noto_Sans_Thai/NotoSansThai-VariableFont_wdth\,wght.ttf) format("truetype");
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background: #fffaf3;
+    font-family: "Noto Sans Thai", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:"wdth" 100;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-rate{
+    position: relative;
+    width: 300px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; 
+}
+.container-rate .post{
+    display: none ;
+}
+.container-rate .text {
+    padding: 8px;
+    font-size: 19px;
+    color: #848484;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+}
+
+.container-rate .star-widget input{
+    display: none;
+}
+
+.star-widget .text-rate{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    color: #848484;
+    margin: 65px 0 0px 0;
+    padding: 5px;
+    font-size: 18px;
+}
+
+.star-widget label{
+    font-size: 48px;
+    color:  #c1c1c1;
+    padding: 5px;
+    float: right;
+    transition: all 0.2s ease;
+    
+}
+input:not(:checked) ~ label:hover,
+input:not(:checked) ~ label:hover ~ label{
+    color: rgb(250, 221, 90);
+}
+
+input:checked ~ label{
+    color: rgb(250, 221, 90);
+}
+
+input#rate-5:checked ~ label{
+    color: rgb(250, 221, 90);
+    text-shadow: 0 0 10px rgb(160, 106, 65);
+}
+
+
+#rate-1:checked ~ .form-suggestions header::before{
+    content: url('image/1_1.png');
+    padding: 20px;
+    
+}
+
+#rate-2:checked ~ .form-suggestions header::before{
+    content: url('image/1_2.png');
+    padding: 20px;
+    
+    
+    
+}
+#rate-3:checked ~ .form-suggestions header::before{
+    content: url('image/1_3.png');
+    padding: 20px;
+    
+    
+}
+#rate-4:checked ~ .form-suggestions header::before{
+    content: url('image/1_4.png');
+    padding: 20px;
+    
+    
+}
+#rate-5:checked ~ .form-suggestions header::before{
+    content: url('image/1_5.png');
+    padding: 20px;
+    
+    
+}
+
+.container-rate .form-suggestions{
+    display: none;
+}
+
+input:checked ~ .form-suggestions{
+    display: block;
+}
+
+input:checked ~ .text-rate{
+    display: none;
+}
+
+.form-suggestions header{
+    width: 100%;
+    text-align: center;
+    transition: all 0.2 ease;
+    align-items: center;
+}
+
+.form-suggestions .textarea{
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+    padding: 10px;
+}
+.form-suggestions .textarea textarea{
+    height: 100%;
+    width: 100%;
+    outline: none;
+    color: #848484;
+    border: 1px solid #999999;
+    background:rgb(254, 252, 250);
+    padding: 10px;
+    font-size: 16px;
+    resize: none;
+}
+
+.form-suggestions .btn{
+    width: 100%;
+    margin: 20px 0 0 0;
+    padding: 10px;
+}
+.form-suggestions .btn button{
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #999999;
+    outline: none;
+    background: #1a7467;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.form-suggestions .btn button:hover{
+    background: #0f7566;
+}

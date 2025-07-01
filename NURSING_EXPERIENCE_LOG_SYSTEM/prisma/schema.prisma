@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "postgresql"
+//   url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// }
+
+model Test {
+  id           Int              @id @default(autoincrement())
+  name         String?          @db.VarChar(255)
+  email        String           @unique
+  password     String       
+  role         Role             @default(STUDENT)
+  practicelog  PracticeLog[]    @relation("student")
+  
+}
+
+enum Role {
+  STUDENT
+  APPROVER
+  ADMIN
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Skills{
+  id   Int    @id @default(autoincrement())
+  mainskills String 
+  subskills Subskills[]
+  
+}
+
+model Subskills{
+  id   Int    @id @default(autoincrement())
+  subskill String?
+  reqSubject Int
+  reqProgram Int
+  SubjectFiels String?
+  code String @default("s1.1")
+  skillsid Int
+  skills Skills @relation(fields: [skillsid], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  
+}
+
+model Place{
+  id   Int    @id @default(autoincrement())
+  Place String
+  ward Ward[]
+}
+
+model Ward{
+  id   Int    @id @default(autoincrement())
+  ward String
+  placeid Int
+  place Place @relation(fields: [placeid], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model PracticeLog{
+  id  Int    @id @default(autoincrement())
+  Sid Int
+  StudentName String
+  Date String
+  Place String
+  PlaceOther String?
+  Ward String
+  WardOther String?
+  Bed String?
+  Code String
+  MainSkill String
+  SubSkill String
+  SkillOther String?
+  ApproverType String
+  Aid Int 
+  ApproverName String
+  createdAt  DateTime  @default(now())
+  modifyAt  DateTime  @default(now())
+  approvedAt  DateTime? 
+  Status  Status @default(WAIT)
+  student Test @relation("student",fields: [Sid],references: [id] , onUpdate: Cascade, onDelete: Cascade)
+  
+}
+
+enum Status {
+  WAIT
+  APPROVED
+}
+
+model Approver{
+  id Int @id @default(autoincrement())
+  name String
+  type Int
+  Pin String 
+}
+
+model WrongPin{
+  id Int @id @default(autoincrement())
+  StudentName String
+  ApproverName String
+  WrongPin String?
+  createdAt  DateTime  @default(now())
+}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตรวจสอบตำแหน่ง</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .spinner {
+            animation: rotate 2s linear infinite;
+            z-index: 2;
+            /* position: absolute;
+            top: 50%;
+            left: 50%; */
+            /* margin: -25px 0 0 -25px; */
+            width: 50px;
+            height: 50px;
+            
+            & .path {
+                stroke: hsl(164, 99%, 31%);
+                stroke-linecap: round;
+                animation: dash 1.5s ease-in-out infinite;
+            }
+            
+            }
+
+            @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+            }
+
+            @keyframes dash {
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
+            }
+    </style>
+</head>
+<body >
+    <div class="min-h-screen flex  items-center justify-center py-6 px-4 z-10 space-x-10">
+        <div class="space-y-5 text-center">
+            <div class="flex justify-center">
+                <svg class="spinner" viewBox="0 0 50 50">
+                    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                  </svg>
+            </div>
+            <h1 class="text-xl text-gray-800">ตรวจสอบตำแหน่งของคุณ</h1>
+            <p class="text-gray-800" id="location-label">กำลังตรวจสอบตำแหน่ง...</p>
+        </div>
+    </div>
+
+    <script>
+
+        window.onload = setTimeout(requestLocationAccess , 1000);
+        // window.onload = requestLocationAccess 
+        function requestLocationAccess() {
+            if (navigator.permissions) {
+                navigator.permissions.query({ name: 'geolocation' }).then(permissionStatus => {
+                    if (permissionStatus.state === 'granted' || permissionStatus.state === 'prompt') {
+                        getLocation();
+                    } else {
+                        redirectToError("การเข้าถึงตำแหน่งถูกปฏิเสธ");
+                    }
+                });
+            } else {
+                getLocation();
+            }
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                redirectToError("เบราว์เซอร์ของคุณไม่รองรับการตรวจสอบตำแหน่ง");
+            }
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetch(`get_location.php?lat=${lat}&lon=${lon}`)
+                .then(response => response.text())
+                .then(data => {
+                    const url_params = new URLSearchParams(window.location.search);
+                    const id = url_params.get('id');
+                    if (data.trim() === "จังหวัดพิจิตร") {
+                        document.getElementById("location-label").innerText = "ตำแหน่งปัจจุบันของคุณ: " + data;
+                        window.location.replace("survey.html?id="+id);
+                    } else {
+                        // console.log(data)
+                        // redirectToError("ตำแหน่งของคุณไม่ใช่จังหวัดพิจิตร");
+                        window.location.replace("survey.html?id="+id);
+                    }
+                })
+                .catch(() => redirectToError("เกิดข้อผิดพลาดในการตรวจสอบตำแหน่ง"));
+        }
+
+        function showError(error) {
+            let errorMsg = "ไม่สามารถตรวจสอบตำแหน่งได้";
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = "ผู้ใช้ปฏิเสธการเข้าถึงตำแหน่ง";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = "ข้อมูลตำแหน่งไม่สามารถใช้งานได้";
+                    break;
+                case error.TIMEOUT:
+                    errorMsg = "หมดเวลารอการตอบกลับ";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMsg = "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+                    break;
+            }
+            redirectToError(errorMsg);
+        }
+
+        function redirectToError(message) {
+            Swal.fire({
+                icon: "error",
+                title: message,
+                showConfirmButton: false,
+                timer: 1100
+            }).then(result=>{
+                window.location.replace("404.html");
+            });
+            // alert(message);
+            
+        }
+    </script>
+</body>
+</html>

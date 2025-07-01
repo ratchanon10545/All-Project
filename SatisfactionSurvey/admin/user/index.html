@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการผู้ใช้งาน</title>
+    <link rel="apple-touch-icon" href="../image/favicons/apple-touch-icon.png" sizes="180x180">
+        <link rel="icon" href="../../image/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+        <link rel="icon" href="../../image/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+        <link rel="icon" href="../../image/favicons/favicon.ico">
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script src="../../config.js"></script>
+        <script src="../md5.js"></script>
+        <link rel="stylesheet" href="user.css">
+
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+<body>
+    <div class="min-h-screen flex  items-center justify-center py-6 px-4 z-10 space-x-10 text-violet-950">
+        <div class="relative overflow-x-auto" >
+            
+            <div class="flex space-x-2 pb-5">
+                <button onclick="back_home()"
+                    class="bg-white text-center w-48 rounded-2xl h-13 relative text-black text-xl font-semibold group"
+                    type="button"
+                    >
+                    <div
+                        class="bg-green-400 rounded-xl h-9 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500"
+                    >
+                        <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 1024 1024"
+                        height="20px"
+                        width="20px"
+                        >
+                        <path
+                            d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                            fill="#000000"
+                        ></path>
+                        <path
+                            d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                            fill="#000000"
+                        ></path>
+                        </svg>
+                    </div>
+                    <p class="translate-x-2">หน้าหลัก</p>
+                    </button>
+
+                    <div>
+                        <input type="text" placeholder="ชื่อผู้ใช้งาน" id="username_input"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+                    <div>
+                        <input type="text" placeholder="รหัสผ่าน" id="password_input"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    </div>
+                <div>
+                    <input type="text" placeholder="ชื่อ" id="name_input"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                </div>
+                <div>
+                    <select name="" id="role_input"  required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                        <option value="" disabled selected hidden >สิทธิ์</option>
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                    <!-- <input type="text" placeholder="สิทธิ์" id="role_input"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"> -->
+                </div>
+                
+                <div tabindex="0" class="plusButton" onclick="add_row()">
+                    <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                      <g mask="url(#mask0_21_345)">
+                        <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+                      </g>
+                    </svg>
+                  </div>
+
+            </div>
+            <table id="userdata" class="w-full text-sm text-left rtl:text-right text-gray-500" >
+            </table>
+
+            <div id="default-modal" class="hidden z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                  <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md">
+                      <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                          <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-yellow-100 sm:mx-0 sm:size-10">
+                            <svg class="size-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                            </svg>
+                          </div>
+                          <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                            <h3 class="text-base font-semibold text-gray-900" id="modal-title">เปลี่ยนรหัสผ่าน</h3>
+                            <div class="text-red-600 hidden" id="error_password">รหัสผ่านไม่ตรงกัน</div>
+                            <div class="mt-2 w-full">
+                                <input type="text" id="id_pass" class="hidden"/>
+                                <input type="password" id="password_reset" class="border rounded-md border-grey-600 p-2 " placeholder="รหัสผ่าน">
+                            </div>
+                            <div class="mt-2 w-full">
+                                <input type="password" id="confrim_password_reset" class="border rounded-md border-grey-600 p-2" placeholder="ยืนยันรหัสผ่าน">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button onclick="toggle()" type="button" type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">ยกเลิก</button>
+                        <button onclick="reset_password()" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">ยืนยัน!</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+  
+        </div>
+        
+    </div>
+    
+</body>
+
+<script>
+    var isOpen = false;
+    function toggle(id){
+        isOpen = !isOpen
+        if(isOpen){
+            const modal = document.getElementById('default-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('block');
+            document.getElementById('id_pass').value = id;
+        }
+        else{
+            const modal = document.getElementById('default-modal');
+            modal.classList.remove('block');
+            modal.classList.add('hidden');
+
+            document.getElementById('password_reset').value = '';
+            document.getElementById('confrim_password_reset').value = '';
+            document.getElementById('error_password').classList.add('hidden');
+        }
+    }
+    function back_home(){
+        window.location.href = config.apiURL+"/admin/home"
+    }
+    fetch(config.apiURL+'/api/users/users.php', {
+                method: 'GET',
+                headers: {
+                'X-API-KEY':localStorage.token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
+                }
+            }).then(response => response.text())
+            .then(result => {   
+                var jsonObj = JSON.parse(result);
+                if(jsonObj.RespCode == 400){
+                    localStorage.clear();
+                    window.location.href = config.apiURL+'/admin'
+                }
+                else{ 
+                    // jsonToHtmlTable(jsonObj, '#userdata');
+                    output = document.getElementById('userdata')
+                    output.innerHTML = json2Table(jsonObj)
+                }
+            
+    })
+
+    function json2Table(json) {
+        let cols = Object.keys(json[0]);
+        //map over array of json objs, for each row(obj) map over column values,
+        //and return a td with the value of that object for its column
+        //take that array of tds and join them
+        //then return a row of the tds
+        //finally join all the rows together
+        let i = 1;
+        let rows = json
+            .map((row,index) => {
+            let tds = cols.map(col => col == 'image' ? 
+            `<td class="w-1/5" id="${col+index}"><img id="dataimg${index}" src='${row[col]}'/></td>`:
+            `<td class="px-2" id="${col+index}">${row[col]}</td>`).join("");
+            return `<tr class="bg-white border-b">${tds}
+                    <td class="space-y-2">
+                        <button class="edit-button" id="edit_button${index}" value="Edit" class="edit" onclick="edit_row(${index})">
+                            <svg class="edit-svgIcon" viewBox="0 0 512 512">
+                                <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 
+                                89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 
+                                37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 
+                                37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 
+                                3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 
+                                67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 
+                                18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z">'+
+                                </path>
+                            </svg>
+                        </button>
+                        
+                        <button class="save-button" id="save_button${index}" value="Save" onclick="save_edit_row(${index})">
+                            <?xml version="1.0" encoding="utf-8"?>
+                                <svg class="save-svgIcon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.73 122.88" style="enable-background:new 0 0 122.73 122.88" xml:space="preserve"><style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M109.5,113.68L109.5,113.68l-6.09,0c-0.4,0-0.73-0.32-0.73-0.72V69.48l0-0.1c0-0.9-0.17-1.65-0.49-2.22 c-0.06-0.11-0.14-0.22-0.2-0.31c-0.06-0.09-0.16-0.18-0.23-0.27l-0.02-0.02c-0.3-0.3-0.68-0.53-1.12-0.69l-0.25-0.07l-0.04-0.01 l-0.01,0c-0.41-0.11-0.88-0.17-1.38-0.17h-0.05l-0.08,0H36.75c-0.89,0-1.62,0.17-2.18,0.49l-0.02,0.01l-0.27,0.17l-0.04,0.04 c-0.09,0.07-0.18,0.15-0.27,0.23l-0.02,0.02l-0.01,0.01c-0.62,0.63-0.92,1.57-0.92,2.82l0,0.04l0,43.54h0 c0,0.4-0.33,0.72-0.73,0.72l-9.85,0c0,0,0,0,0,0c-0.19,0-0.38-0.08-0.51-0.21L9.87,101.41c-0.18-0.14-0.29-0.36-0.29-0.59l0-87.91 l0-0.08c0-0.83,0.15-1.52,0.44-2.07l0,0c0.05-0.11,0.11-0.2,0.17-0.29l0.02-0.03c0.07-0.11,0.19-0.18,0.25-0.29l0.01-0.02 l0.02-0.02l0,0c0.25-0.25,0.57-0.45,0.92-0.59l0.04-0.02l0.02-0.01l0.02-0.01l0.18-0.06v0l0.01-0.01c0.42-0.14,0.9-0.2,1.44-0.21 l0.09-0.01l26.21,0c0.4,0,0.73,0.32,0.73,0.72v28.75c0,0.52,0.05,1.03,0.13,1.5c0.09,0.46,0.15,0.98,0.39,1.34l0.01,0.02l0,0.01v0 c0.18,0.44,0.42,0.87,0.67,1.25c0.24,0.37,0.56,0.77,0.9,1.13l0.02,0.02l0,0.01l0.01,0c0.48,0.5,0.94,1.15,1.62,1.27l0.01,0l0.01,0 l0.01,0.01l0.32,0.17l0,0l0.4,0.18v0l0.01,0l0,0l0,0v0c0.33,0.14,0.67,0.26,1,0.34l0.01,0l0.03,0l0.01,0l0.03,0l0.26,0.05v0 c0.45,0.09,0.93,0.14,1.42,0.14l0.02,0h47.8c1.03,0,1.98-0.18,2.85-0.53l0.01-0.01c0.87-0.36,1.67-0.9,2.39-1.61l0.03-0.03 c0.36-0.36,0.69-0.75,0.96-1.16c0.26-0.38,0.58-0.76,0.66-1.22l0-0.01l0.01-0.01l0.01-0.02c0.18-0.43,0.34-0.88,0.41-1.34l0-0.03 c0.09-0.47,0.13-0.97,0.13-1.49V9.92c0-0.4,0.33-0.73,0.73-0.73h6c0.58,0,1.09,0.07,1.54,0.21c0.48,0.15,0.89,0.39,1.2,0.7 c0.68,0.67,0.88,1.67,0.9,2.59l0.01,0.09v0.05l0,0.02v97.19c0,0.56-0.07,1.07-0.21,1.51l-0.01,0.03v0l0,0.02l-0.08,0.22l0,0 l-0.02,0.06l-0.09,0.2l-0.01,0.04l-0.02,0.04l0,0l-0.03,0.06l-0.15,0.22l0,0l-0.05,0.08l-0.14,0.17l-0.06,0.07 c-0.15,0.16-0.33,0.3-0.53,0.42c-0.17,0.1-0.36,0.19-0.55,0.26l-0.06,0.02c-0.16,0.05-0.34,0.1-0.53,0.14l-0.02,0l-0.01,0l-0.02,0 l-0.09,0.01l-0.02,0l0,0l-0.02,0c-0.22,0.03-0.49,0.05-0.76,0.06H109.5L109.5,113.68z M53.93,104.43c-1.66,0-3-1.34-3-3 c0-1.66,1.34-3,3-3h31.12c1.66,0,3,1.34,3,3c0,1.66-1.34,3-3,3H53.93L53.93,104.43z M53.93,89.03c-1.66,0-3-1.34-3-3s1.34-3,3-3 h31.12c1.66,0,3,1.34,3,3s-1.34,3-3,3H53.93L53.93,89.03z M94.03,9.39l-45.32-0.2v25.86H48.7c0,0.46,0.06,0.86,0.17,1.2 c0.03,0.06,0.04,0.1,0.07,0.15c0.09,0.23,0.22,0.44,0.4,0.61l0.03,0.03v0c0.06,0.06,0.11,0.1,0.17,0.15 c0.06,0.05,0.13,0.09,0.2,0.14c0.39,0.23,0.92,0.34,1.58,0.34v0l40.1,0.25v0l0,0v0c0.91,0,1.57-0.21,1.98-0.63 c0.42-0.43,0.63-1.1,0.63-2.02h0V9.39L94.03,9.39z M41.91,73.23h53.07v0c0.35,0,0.65,0.29,0.65,0.64l0,39.17 c0,0.35-0.29,0.65-0.65,0.65H41.91v0c-0.35,0-0.65-0.29-0.65-0.64l0-39.17C41.26,73.52,41.56,73.23,41.91,73.23L41.91,73.23 L41.91,73.23z M9.68,0h104.26c4.91,0,8.79,3.86,8.79,8.79V114c0,4.95-3.9,8.88-8.79,8.88l-96.61,0l-0.24-0.25L1.05,106.6L0,105.9 V8.76C0,3.28,4.81,0,9.68,0L9.68,0L9.68,0z"/>
+                                </g>
+                                </svg>
+                        </button>
+                        
+                        <button class="delete-button" id="delete_button${index}" onclick="confirm_delete(${row['id']})">
+                            <?xml version="1.0" encoding="utf-8"?>
+                                <svg  class="delete-svgIcon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="109.484px" height="122.88px" viewBox="0 0 109.484 122.88" enable-background="new 0 0 109.484 122.88" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M2.347,9.633h38.297V3.76c0-2.068,1.689-3.76,3.76-3.76h21.144 c2.07,0,3.76,1.691,3.76,3.76v5.874h37.83c1.293,0,2.347,1.057,2.347,2.349v11.514H0V11.982C0,10.69,1.055,9.633,2.347,9.633 L2.347,9.633z M8.69,29.605h92.921c1.937,0,3.696,1.599,3.521,3.524l-7.864,86.229c-0.174,1.926-1.59,3.521-3.523,3.521h-77.3 c-1.934,0-3.352-1.592-3.524-3.521L5.166,33.129C4.994,31.197,6.751,29.605,8.69,29.605L8.69,29.605z M69.077,42.998h9.866v65.314 h-9.866V42.998L69.077,42.998z M30.072,42.998h9.867v65.314h-9.867V42.998L30.072,42.998z M49.572,42.998h9.869v65.314h-9.869 V42.998L49.572,42.998z"/>
+                                </g>
+                                </svg>
+                        </button>
+
+                        <button onclick="cancle_row(${index} , ['${row['username']}' , '${row['name']}' , '${row['role']}'])" class="cancle-button" id="cancle_button${index}">
+                            <?xml version="1.0" encoding="utf-8"?>
+                            <svg class="cancle-svgIcon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.88px" height="122.88px" viewBox="0 0 122.88 122.88" enable-background="new 0 0 122.88 122.88" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M61.44,0c33.926,0,61.44,27.514,61.44,61.44c0,33.926-27.514,61.439-61.44,61.439 C27.513,122.88,0,95.366,0,61.44C0,27.514,27.513,0,61.44,0L61.44,0z M98.505,37.049L37.051,98.503 c6.999,4.617,15.379,7.307,24.389,7.307c24.5,0,44.369-19.869,44.369-44.369C105.809,52.431,103.119,44.05,98.505,37.049 L98.505,37.049L98.505,37.049z M24.378,85.829l61.453-61.454c-6.997-4.615-15.381-7.304-24.391-7.304 c-24.5,0-44.369,19.87-44.369,44.369C17.072,70.449,19.761,78.83,24.378,85.829L24.378,85.829L24.378,85.829z"/>
+                            </g>
+                            </svg>
+                            
+                        </button>
+
+                        <button id="qr_button${index}" class="qr-button"  onclick="toggle(${row['id']})">
+                            <svg class="qr-svgIcon" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 509.939"><path fill-rule="nonzero" d="M467.741 267.225c-29.508 29.507-68.357 44.26-107.168 44.26-27.525 0-55.065-7.421-79.28-22.259L60.581 509.939 2.067 451.424l29.258-29.258L0 390.842l37.804-37.806 31.326 31.325 9.609-9.609-46.357-46.357 41.01-41.01 46.357 46.357 103.056-103.056c-14.744-24.161-22.12-51.694-22.121-79.255h-.168c0-38.81 14.752-77.657 44.258-107.163C274.29 14.756 313.135 0 351.946 0c38.81 0 77.66 14.756 107.167 44.263l8.631 8.632C497.249 82.4 512 121.247 512 160.057h-.167c-.002 38.919-14.704 77.779-44.092 107.168zm-60.198-60.185c12.993-12.995 19.489-30.023 19.489-46.983h-.168c0-17.062-6.438-34.096-19.312-46.97l-8.632-8.631c-12.877-12.878-29.911-19.32-46.974-19.32-17.064 0-34.097 6.442-46.975 19.32-12.881 12.881-19.319 29.912-19.319 46.975h-.168c0 16.96 6.498 33.988 19.485 46.975l8.632 8.632c12.874 12.872 29.906 19.31 46.972 19.31 17.064 0 34.098-6.438 46.97-19.308z"/>
+                                </svg>
+                            
+                            
+                        </button>
+                    </td>
+
+                </tr>`;
+            })
+            .join(""); 
+
+        //build the table
+        const table = `
+            <table>
+                <thead class="text-xs text-gray-900 uppercase bg-gray-50 ">
+                    <tr >
+                        <th scope="col" class="px-2 py-3 ">
+                            ID
+                        </th>
+                        <th scope="col" class="px-10 py-3 ">
+                            ชื่อผู้ใช้
+                        </th>
+                        <th scope="col" class="px-2 py-3 ">
+                            ชื่อ
+                        </th>
+                        <th scope="col" class="px-2 py-3 ">
+                            สิทธิ์
+                        </th>
+                        <th scope="col" class="px-2 py-3 ">
+                            เข้าสู่ระบบล่าสุด
+                        </th>
+                        <th scope="col" class="px-2 py-3 ">
+                            ปรับแต่ง
+                        </th>
+                    </tr>
+                <thead>
+                <tbody>
+                    ${rows}
+                <tbody>
+            <table>`;
+
+        return table;
+        }
+
+    function edit_row(no) {
+        document.getElementById("edit_button" + no).style.display = "none";
+        document.getElementById("save_button" + no).style.display = "flex";
+        document.getElementById("delete_button" + no).style.display = "none";
+        document.getElementById("cancle_button" + no).style.display = "flex";
+        document.getElementById("qr_button" + no).style.display = "none";
+
+        var name = document.getElementById("name"+ no);
+        var username = document.getElementById("username"+ no);
+        var role = document.getElementById("role"+ no);
+
+        var name_data = name.innerHTML;
+        var username_data = username.innerHTML;
+        var role_data = role.innerHTML;
+
+        name.innerHTML =
+        "<input class='w-32 border-2 rounded-md p-1 border-black' type='text' id='name_data" + no + "' value='" + name_data + "'>";
+        username.innerHTML =
+        "<input class='w-32 border-2 rounded-md p-1 border-black' type='text' id='username_data" + no + "' value='" + username_data + "'>";
+        role.innerHTML =
+        "<input class='w-32 border-2 rounded-md p-1 border-black' type='text' id='role_data"+ no + "' value='" + role_data + "'>";
+    }
+    function save_edit_row(no){
+        var id = document.getElementById("id"+ no).innerHTML;
+        var name = document.getElementById("name_data"+ no).value;
+        var username = document.getElementById("username_data"+ no).value;
+        var role = document.getElementById("role_data"+ no).value;
+
+        const formData = new FormData();
+
+        formData.append('id', id);
+        formData.append('name', name);
+        formData.append('username', username);
+        formData.append('role', role);
+        // for (const value of formData.values()) {
+        //     console.log(value);
+        // }
+
+        const options = {
+        method: 'POST',
+        body: formData,
+        // If you add this, upload won't work
+        headers: {
+            'X-API-KEY':localStorage.token,
+            'Accept': 'application/json',
+        }
+        };
+        fetch(config.apiURL+'/api/users/edit.php', options)
+            .then(response => response.text())
+            .then(result => {   
+                // var jsonObj = JSON.parse(result);
+                // console.log(jsonObj)
+                    Swal.fire({
+                    title: "แก้ไขรายการเสร็จสิ้น",
+                    icon: "info",
+                    showConfirmButton: false,
+                    timer: 1000
+                }).then((result) =>{
+                    window.location.reload()
+                });
+            }).catch(error => console.log(error));
+    }
+
+    function cancle_row(no , default_data){
+            const username_default = default_data[0];
+            const name_default = default_data[1];
+            const role_default = default_data[2];
+            var name = document.getElementById("name"+ no);
+            var username = document.getElementById("username"+ no);
+            var role = document.getElementById("role"+ no);
+            
+            name.innerHTML = name_default
+            username.innerHTML = username_default
+            role.innerHTML = role_default
+
+            document.getElementById("edit_button" + no).style.display = "flex";
+            document.getElementById("save_button" + no).style.display = "none";
+            document.getElementById("delete_button" + no).style.display = "flex";
+            document.getElementById("cancle_button" + no).style.display = "none";
+            document.getElementById("qr_button" + no).style.display = "flex";
+        }
+    
+    function add_row(){
+        const username = document.getElementById('username_input');
+        const password = document.getElementById('password_input');
+        const name = document.getElementById('name_input');
+        const role = document.getElementById('role_input');
+        const formData = new FormData();
+        var pass = true
+        
+        if(username.value.length <= 0 && pass){
+            pass = false
+            username.classList.add('border-red-600')
+        }
+        else{
+            username.classList.remove('border-red-600')
+            username.classList.add('border-gray-600')
+        }
+        if(password.value.length <= 0 && pass){
+            pass = false
+            console.log('false1')
+            password.classList.add('border-red-600')
+        }
+        else{
+            password.classList.remove('border-red-600')
+            password.classList.add('border-gray-600')
+        }
+        if(name.value.length <= 0 && pass){
+            pass = false
+            console.log('false1')
+            name.classList.add('border-red-600')
+        }
+        else{
+            name.classList.remove('border-red-600')
+            name.classList.add('border-gray-600')
+        }
+        if(role.value.length <= 0 && pass){
+            pass = false
+            console.log('false2')
+            role.classList.add('border-red-600')
+        }
+        else{
+            role.classList.remove('border-red-600')
+            role.classList.add('border-gray-600')
+        }
+        if(pass){
+            formData.append('username', username.value);
+            formData.append('password', MD5(password.value));
+            formData.append('name', name.value);
+            formData.append('role', role.value);
+            const options = {
+            method: 'POST',
+            body: formData,
+            // If you add this, upload won't work
+            headers: {
+                'X-API-KEY':localStorage.token,
+                'Accept': 'application/json',
+            }
+            };
+            fetch(config.apiURL+'/api/users/signup.php', options)
+                .then(response => response.text())
+                .then(result => {   
+                    // var jsonObj = JSON.parse(result);
+                    // console.log(jsonObj)
+                    Swal.fire({
+                        title: "เพิ่มรายการเสร็จสิ้น",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1000
+                    }).then((result) =>{
+                        window.location.reload()
+                    });
+                }).catch(error => console.log(error));
+        }
+            // for (const value of formData.values()) {
+            //     console.log(value);
+            //     }
+           
+        }
+    
+    function confirm_delete(id){
+        Swal.fire({
+        title: "คุณแน่ใจใช่ไหม?",
+        text: "ถ้าลบข้อมูลนี้แล้วจะไม่สามารถกู้คืนได้",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#aaaaaa",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยันการลบ!",
+        cancelButtonText: "ยกเลิก",
+        }).then((result) => {
+        if (result.isConfirmed) {
+            delete_row(id)
+        }
+        });
+    }
+    function delete_row(id){
+        const options = {
+        method: 'DELETE',
+        // If you add this, upload won't work
+        headers: {
+            'X-API-KEY':localStorage.token,
+            'Accept': 'application/json',
+        }
+        };
+        fetch(config.apiURL+'/api/users/delete.php?id='+id, options)
+            .then(response => response.text())
+            .then(result => {   
+                // var jsonObj = JSON.parse(result);
+                // console.log(jsonObj)
+                Swal.fire({
+                    title: "ลบรายการเสร็จสิ้น",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1000
+                }).then((result) => {
+                    window.location.reload();
+                });
+                
+            }).catch(error => console.log(error));
+    }
+
+    function reset_password(){
+        const id = document.getElementById('id_pass');
+        const password = document.getElementById('password_reset');
+        const confrim_password = document.getElementById('confrim_password_reset');
+        const formData = new FormData();
+        let pass = true
+        if(password.value <=0 && pass){
+            password.classList.add('border-red-600');
+            password.classList.remove('border-grey-600');
+            pass = false
+        }
+        else{
+            password.classList.add('border-grey-600');
+            password.classList.remove('border-red-600');
+        }
+        if(confrim_password.value <=0 && pass){
+            confrim_password.classList.add('border-red-600');
+            confrim_password.classList.remove('border-grey-600');
+            pass = false
+        }
+        else{
+            confrim_password.classList.add('border-grey-600');
+            confrim_password.classList.remove('border-red-600');
+        }
+
+        if(password.value != confrim_password.value){
+           const error =  document.getElementById('error_password');
+           error.classList.remove('hidden');
+           error.classList.remove('block');
+           pass = false
+        }
+
+        if(pass){
+            formData.append('id', id.value);
+            formData.append('password', MD5(password.value));
+            formData.append('confrim_password', MD5(confrim_password.value));
+            const options = {
+            method: 'POST',
+            body: formData,
+            // If you add this, upload won't work
+            headers: {
+                'X-API-KEY':localStorage.token,
+                'Accept': 'application/json',
+            }
+            };
+            fetch(config.apiURL+'/api/users/resetpassword.php', options)
+                .then(response => response.text())
+                .then(result => {   
+                    // var jsonObj = JSON.parse(result);
+                    // console.log(jsonObj)
+                    Swal.fire({
+                        title: "แก้ไขรหัสผ่านเสร็จสิ้น",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1000
+                    }).then((result) =>{
+                        window.location.reload()
+                    });
+                }).catch(error => console.log(error));
+        }
+
+    }
+
+</script>
+</script>
+</html>

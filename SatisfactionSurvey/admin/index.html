@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <meta charset="utf-8" /> 
+        <title>เข้าสู่ระบบ</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="apple-touch-icon" href="../image/favicons/apple-touch-icon.png" sizes="180x180">
+        <link rel="icon" href="../image/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+        <link rel="icon" href="../image/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+        <link rel="icon" href="../image/favicons/favicon.ico">
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="admin.css">
+
+        <script src="../config.js"></script>
+        <script src="md5.js"></script>
+    </head>
+    <body>
+        <div class="bg-bee"></div>  
+            <div class="min-h-screen flex  items-center justify-center py-6 px-4 z-10 space-x-10">
+              
+              <div class="max-w-sm w-full ">
+                <div class="p-8 rounded-2xl bg-white shadow border-2 border-teal-400 ">
+                  <form class=" space-y-8" onsubmit="return false">
+                      <div class="wave-group">
+                        <input required id="username" type="text" class="input"
+                        oninvalid="this.setCustomValidity('กรุณาใส่ชื่อผู้ใช้')"
+                        oninput="this.setCustomValidity('')">
+                        <span class="bar"></span>
+                        <label class="label">
+                          <span class="label-char" style="--index: 0">ชื่อ</span>
+                          <span class="label-char" style="--index: 1">ผู้</span>
+                          <span class="label-char" style="--index: 2">ใช้</span>
+                        </label>
+                      </div>
+                      
+                
+                        <div class="wave-group">
+                          <input required id="password" type="password" class="input"
+                          oninvalid="this.setCustomValidity('กรุณาใส่รหัสผ่าน')"
+                        oninput="this.setCustomValidity('')">
+                          <span class="bar"></span>
+                          <label class="label">
+                            <span class="label-char" style="--index: 0">ร</span>
+                            <span class="label-char" style="--index: 1">หัส</span>
+                            <span class="label-char" style="--index: 2">ผ่าน</span>
+                          </label>
+                          <div class="absolute top-5 right-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-4 h-4 absolute right-4 cursor-pointer" viewBox="0 0 128 128">
+                              <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" data-original="#000000"></path>
+                            </svg>
+                          </div>
+                        </div>
+                      
+      
+                    <p id="error" class="text-red-600 pb-5"></p>
+      
+                    <div class="flex justify-center !mt-8">
+                      <button onclick="handlelogin()" class="button"> 
+                        เข้าสู่ระบบ
+                      </button> 
+                    </div>
+                    
+                  </form>
+                </div>
+              </div>
+              
+            </div>
+    </body>
+
+    <script>
+       async function handlelogin(){
+          var pass = true;
+          if(pass & document.getElementById('username').value.length <= 0 ){
+            pass = false;
+          }
+          if(pass & document.getElementById('password').value.length <= 0 ){
+            pass = false;
+          }
+          if(pass){
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+
+            const rawResponse = await fetch(config.apiURL+'/api/login/login.php', {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    username,
+                    password:MD5(password)
+                })
+            });
+            const content = await rawResponse.json();
+            
+            if(content.RespCode == 200) {
+              document.getElementById('error').innerText = ""
+              localStorage.setItem('token', content.Result.Token)
+              localStorage.setItem('fullname', content.Result.Fullname)
+              localStorage.setItem('role', content.Result.role)
+              window.location.href = config.apiURL+'/admin/home'
+            }
+            else{
+              document.getElementById('error').innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+            }
+            
+          }
+            
+        }
+    </script>
+</html>

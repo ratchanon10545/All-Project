@@ -1,0 +1,155 @@
+
+<html>
+    <head>
+        <meta charset="utf-8" /> 
+        <title>แบบประเมินความพึงพอใจ</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="apple-touch-icon" href="image/favicons/apple-touch-icon.png" sizes="180x180">
+        <link rel="icon" href="image/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+        <link rel="icon" href="image/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+        <link rel="icon" href="image/favicons/favicon.ico">
+
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="style.css">
+
+        <script src="config.js"></script>
+
+    </head>
+    <body >
+        <div>
+        <div >
+            <div class="relative ">
+                <div class="p-5  flex justify-center ">
+                    <img  id="image" src=""  class=" shadow-lg shadow-gray-400 rounded-full w-60
+                    border-4 border-teal-400 "  alt="">
+                </div>
+                <div style="background: #009688; border: 1px solid #999999;
+                color:#ffffff;  " class="p-2 w-auto space-y-2 shadow-lg shadow-gray-400
+                rounded-lg absolute bottom-11 right-0 text-xs">
+                    <div class="flex justify-center  space-x-1">
+                        <p >ชื่อ</p>
+                        <p id="name" ></p>
+                    </div>
+                    <div class="flex justify-center space-x-1 ">
+                        <p>ตำแหน่ง</p>
+                        <p id="position" ></p>
+                    </div>
+            
+                </div>
+            </div>
+            
+        </div>
+        <div class="pt-2 text-xl relative ">
+            <div class="">
+                <form id="form" onsubmit="return false">    
+                    <div >
+                        <div class="container-rate border-2 border-teal-600"> 
+                            <div class="post">
+                                <div class="flex justify-center ">
+                                    <img src="image/star_face.png" class="w-20 " alt="">
+                                </div>
+                                <div class="text">ขอขอบคุณสำหรับการประเมิน</div>
+                            </div>
+                            <div class="star-widget">
+                                <input type="radio" name="rate" id="rate-5" value="5">
+                                <label for="rate-5" class="fa fa-star"></label>
+                                <input type="radio" name="rate" id="rate-4" value="4">
+                                <label for="rate-4" class="fa fa-star"></label>
+                                <input type="radio" name="rate" id="rate-3" value="3">
+                                <label for="rate-3" class="fa fa-star"></label>
+                                <input type="radio" name="rate" id="rate-2" value="2">
+                                <label for="rate-2" class="fa fa-star"></label>
+                                <input type="radio" name="rate" id="rate-1" value="1">
+                                <label for="rate-1" class="fa fa-star"></label>
+
+                                <div class="form-suggestions">
+                                    
+                                    <header></header>
+                                    
+                                    <div class="textarea">
+                                        <textarea cols="18" id="suggestions" placeholder="ข้อเสนอแนะเพิ่มเติม...."></textarea>
+                                    </div>
+                                    <div class="btn">
+                                        <button class="rounded-full" type="submit" >บันทึก</button>
+                                    </div>
+                                </div>
+
+                                <div class="text-rate">
+                                    <div >กรุณาให้คะแนนตามความพึงพอใจ</div>
+                                </div>
+                            </div>        
+                        </div>
+                    </div>
+                </form>
+
+                <div class="flex justify-center text-xs pt-4 opacity-60">
+                    <p>&#169; สำนักงานที่ดินจังหวัดพิจิตร</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
+
+<script >
+    
+    const btn =document.querySelector("button")
+    const post =document.querySelector(".post")
+    const widget =document.querySelector(".star-widget")
+    
+    btn.onclick = async () => {
+        
+            const officer_id = id;
+            const point = document.querySelector('input[name="rate"]:checked').value;
+            const suggestions = document.getElementById('suggestions').value;
+            
+            // config.apiURL+'/api/data/create.php'
+            const rawResponse = await fetch(config.apiURL+'/api/data/create.php', {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    officer_id,
+                    point,
+                    suggestions
+                })
+            });
+            const content = await rawResponse.json();
+
+            console.log(content);
+
+            widget.style.display = 'none';
+            post.style.display = 'block';
+            
+            
+    }
+    
+    const url_params = new URLSearchParams(window.location.search);
+    const id = url_params.get('id');
+    
+    if(!id){
+        window.location.replace("404.html");
+    }
+
+    var requestOptions = {
+        method:'GET',
+        redirect: 'follow'
+    };
+
+    fetch(config.apiURL+'/api/user/user.php?id='+id,requestOptions)
+    .then(response => response.text())
+    .then(result => {
+        var jsonObj = JSON.parse(result);
+        document.getElementById('name').innerText = jsonObj.name;
+        document.getElementById('image').setAttribute('src',jsonObj.image);
+        document.getElementById('image').setAttribute('alt',jsonObj.name);
+        document.getElementById('position').innerText = jsonObj.position;
+       
+    })
+    .catch(error => window.location.replace("422.html"));
+</script>

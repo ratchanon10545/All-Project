@@ -1,0 +1,85 @@
+.price-container,
+            .price-container:before,
+            .price-container:after,
+            .price-container .price {
+                height: 3em;
+                width: 3em;
+                background: #d32f2f;
+            }
+
+            .price-container:before,
+            .price-container:after {
+                content: "";
+                position: absolute;
+            }
+
+            .price-container {
+                margin: 20px auto; /* Centering for demo */
+                position: absolute; /* Context */
+                top: -2rem;
+                right: 0;
+                background-color: #e53935;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+                transform-origin: center;
+                transition: 0.3s all ease-out;
+            }
+
+            .price-container:before {
+                top: 0;
+                left: 0;
+                -webkit-transform: rotate(22.5deg);
+                -moz-transform: rotate(22.5deg);
+                -ms-transform: rotate(22.5deg);
+                    -o-transform: rotate(22.5deg);
+                    transform: rotate(22.5deg);
+                z-index: 1;
+            }
+
+            .price-container:after {
+                top: 0;
+                left: 0;
+                -webkit-transform: rotate(-45deg);
+                -moz-transform: rotate(-45deg);
+                -ms-transform: rotate(-45deg);
+                    -o-transform: rotate(-45deg);
+                    transform: rotate(-45deg);
+                background-color: #e53935;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)
+            }
+
+            .price-container .price {
+                padding: 0em 0em;
+                height: 3em; /* height minus padding */
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                -webkit-transform: rotate(-22.5deg);
+                -moz-transform: rotate(-22.5deg);
+                -ms-transform: rotate(-22.5deg);
+                    -o-transform: rotate(-22.5deg);
+                    transform: rotate(-22.5deg);
+                z-index: 1; /* important so the text shows up */
+            }
+
+            .price-container .price span {
+            position: relative;
+            z-index: 100;
+            display: block;
+            text-align: center;
+            color: #fff;
+            font: 0.5em/0.4em Sans-Serif;
+            text-transform: uppercase;
+            }
+
+            .price-container .price span.number {
+            font-weight: bold;
+            font-size: 1em;
+            line-height: 3em;
+            color: #ffebee;
+            }
+
+            .price-container:hover {
+                transform: matrix3d(1.058,0.38,-0.38,0,-0.38,1.058,-0.38,0,0.38,0.38,0.8464,0,0,0,0,1);
+            -webkit-transform: matrix3d(1.058,0.38,-0.38,0,-0.38,1.058,-0.38,0,0.38,0.38,0.8464,0,0,0,0,1);
+            }
+  
